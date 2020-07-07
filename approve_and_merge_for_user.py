@@ -98,7 +98,7 @@ if __name__ == '__main__':
         print ('Approve the pull request as the user is the approved user for pull requests')
          #add a review to the pull request saying it shouldnt exist
         review_url = event_data["pull_request"]["url"] + "/reviews"
-        review_json = {"body": "Auto-approved because users is {github_pr_author} and is allowed to merge to stable.", "event": "APPROVE"}
+        review_json = {"body": "Auto-approved because users is '"+ github_pr_author +"' and is allowed to merge to stable.", "event": "APPROVE"}
         review_response = sess.post(review_url,json=review_json);
 
         if review_response.status_code == 200:
