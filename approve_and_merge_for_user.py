@@ -76,14 +76,11 @@ if __name__ == '__main__':
     #load event data
     event_data = json.load(open(github_event_path))
 
-    check_run = event_data["check_run"]
-    name = check_run["name"]
-
     sess = get_session(github_token)
     sess_personal = get_session_personal(github_personal_token)
 
 
-    pull_request = check_run["pull_requests"][0]
+    pull_request = event_data["pull_requests"][0]
     pr_number = pull_request["number"]
     pr_src = pull_request["head"]["ref"]
     pr_dst = pull_request["base"]["ref"]
