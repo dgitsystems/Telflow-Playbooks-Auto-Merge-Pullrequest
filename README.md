@@ -3,23 +3,8 @@
 A GitHub Action to automatically merge pull requests on my repositories if:
 
 *   I opened the PR
-*   The test suite is passing
-*   I haven't marked the PR as a WIP
-
-After the PR is merged, it deletes the branch to keep things neat and tidy.
-
-![](screenshot.png)
-
-
-
-## Motivation
-
-I have a bunch of repos where I'm the only contributor, and I want to merge pull requests as soon as tests pass.
-(The repo with [my blog](https://github.com/alexwlchan/alexwlchan.net), for example.)
-
-This Action saves me the work of actually pushing the button, and means they get merged a little faster.
-
-The Action is defined in a separate repo that doesn't have auto-merging pull requests so that somebody can't merge a PR with malicious code by editing the underlying Action.
+*   if the pr is from the INPUT_GITHUB_PR_AUTHOR specified then it will allow the PR and auto approve then merged it
+*   if it is not a pr from the INPUT_GITHUB_PR_AUTHOR then it will comment on the merge and close it
 
 
 
@@ -27,18 +12,31 @@ The Action is defined in a separate repo that doesn't have auto-merging pull req
 
 Fork this repo, add your own rules in `merge_and_cleanup_branch.py`.
 
-Reference the Action in your `.workflow` file:
+Reference the Action in your `.workflow` file: .github/workflows/dgit-auto-approve.yml
 
-```hcl
-workflow "merge_and_cleanup" {
-  on = "pull_request"
-  resolves = ["when tests pass, merge and cleanup"]
-}
+below is the telflow-playbook referance.
 
-action "when tests pass, merge and cleanup" {
-  uses = "yourname/auto_merge_my_pull_requests@development"
-  secrets = ["GITHUB_TOKEN"]
-}
+```yml
+
+name: Auto approve
+on: 
+  pull_request:
+    types: 
+      - opened
+      - reopened
+    branches: 
+      - 'stable/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: dgitsystems/Telflow-Playbooks-Auto-Merge-Pullrequest@development
+      env:
+        INPUT_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        INPUT_GITHUB_PR_AUTHOR: "dgit-ci"
+        INPUT_GITHUB_PERSONAL_TOKEN: "${{ secrets.DGIT_CI_TOKEN }}"
+
 ```
 
 
