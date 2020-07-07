@@ -85,8 +85,8 @@ if __name__ == '__main__':
     
     pull_request = event_data["pull_request"]
     pr_number = event_data["number"]
-    pr_src = event_data["head"]["ref"]
-    pr_dst = event_data["base"]["ref"]
+    pr_src = event_data["pull_request"]["head"]["ref"]
+    pr_dst = event_data["pull_request"]["base"]["ref"]
 
     print(f"*** Checking pull request #{pr_number}: {pr_src} ~> {pr_dst}")
 
