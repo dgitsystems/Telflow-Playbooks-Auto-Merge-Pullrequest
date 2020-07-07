@@ -65,10 +65,10 @@ def get_session_personal(github_token):
 
 if __name__ == '__main__':
     #Set env to variables 
-    github_token = os.environ["GITHUB_TOKEN"]
+    github_token = os.environ["INPUT_GITHUB_TOKEN"]
     github_repository = os.environ["GITHUB_REPOSITORY"]
-    github_pr_author = os.environ["GITHUB_PR_AUTHOR"]
-    github_personal_token = os.environ["GITHUB_PERSONAL_TOKEN"]
+    github_pr_author = os.environ["INPUT_GITHUB_PR_AUTHOR"]
+    github_personal_token = os.environ["INPUT_GITHUB_PERSONAL_TOKEN"]
 
     #event path that contains webhook like informaton
     github_event_path = os.environ["GITHUB_EVENT_PATH"]
