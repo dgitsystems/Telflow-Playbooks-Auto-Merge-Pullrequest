@@ -137,7 +137,7 @@ if __name__ == '__main__':
         #close the pull request
         pull_url = event_data["pull_request"]["url"]
         
-        close_json = {"body": "Stable branches do not accept pull requests other then from jenkins.", "event": "COMMENT"}
+        close_json = {"state": "closed"}
         close_response = sess.patch(pull_url,json=close_json);
 
         if close_response.status_code == 200:
