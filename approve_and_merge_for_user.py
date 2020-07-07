@@ -82,36 +82,7 @@ if __name__ == '__main__':
     sess = get_session(github_token)
     sess_personal = get_session_personal(github_personal_token)
 
-    #if not a pull request then its okay we will ignore and move on
-    if len(check_run["pull_requests"]) == 0:
-        print("*** Check run is not part of a pull request, so nothing to do")
-        neutral_exit()
 
-    # We should only merge pull requests that have the conclusion "succeeded".
-    #s
-    # We get a check_run event in GitHub Actions when the underlying run is
-    # scheduled and completed -- if it doesn't have a conclusion, this field is
-    # set to "null".  In that case, we give up -- we'll get a second event when
-    # the run completes.
-    #
-    # See https://developer.github.com/v3/activity/events/types/#checkrunevent
-    #
-
-    conclusion = check_run["conclusion"]
-    print(f"*** Conclusion of {name} is {conclusion}")
-
-    if conclusion is None:
-        print(f"*** Check run {name} has not completed, skipping")
-        neutral_exit()
-
-    if conclusion != "success":
-        print(f"*** Check run {name} has failed, will not merge PR")
-        sys.exit(1)
-
-
-    # If the check_run has completed, we want to check the pull request data
-    # before we declare this PR safe to merge.
-    assert len(check_run["pull_requests"]) == 1
     pull_request = check_run["pull_requests"][0]
     pr_number = pull_request["number"]
     pr_src = pull_request["head"]["ref"]
