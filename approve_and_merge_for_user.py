@@ -68,6 +68,7 @@ if __name__ == '__main__':
     github_token = os.environ["GITHUB_TOKEN"]
     github_repository = os.environ["GITHUB_REPOSITORY"]
     github_pr_author = os.environ["GITHUB_PR_AUTHOR"]
+    github_personal_token = os.environ["GITHUB_PERSONAL_TOKEN"]
 
     #event path that contains webhook like informaton
     github_event_path = os.environ["GITHUB_EVENT_PATH"]
@@ -79,7 +80,7 @@ if __name__ == '__main__':
     name = check_run["name"]
 
     sess = get_session(github_token)
-    sess_personal = get_session_personal(github_token)
+    sess_personal = get_session_personal(github_personal_token)
 
     #if not a pull request then its okay we will ignore and move on
     if len(check_run["pull_requests"]) == 0:
