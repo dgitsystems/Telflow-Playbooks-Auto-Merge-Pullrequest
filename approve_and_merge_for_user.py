@@ -93,10 +93,36 @@ if __name__ == '__main__':
     #lets check who created the PR 
     pr_user = event_data["pull_request"]["user"]["login"]
     print(f"*** This PR was opened by {pr_user}")
-    if pr_user != github_pr_author:
+    if pr_user == github_pr_author:
+        
+        print ('Approve the pull request as the user is the approved user for pull requests')
+         #add a review to the pull request saying it shouldnt exist
+        review_url = event_data["pull_request"]["url"] + "/reviews"
+        review_json = {"body": "Auto-approved because users is {github_pr_author} and is allowed to merge to stable.", "event": "APPROVE"}
+        review_response = sess.post(review_url,json=review_json);
+
+        if review_response.status_code == 200:
+            print ('Review post made succesfully.')
+        else:
+            print ('Review post error')
+            sys.exit(1)
+        
+        #this needs to be done under the personal token not the repo one so it works
+        print("*** This PR is ready to be merged.")
+        merge_url = event_data["pull_request"]["url"] + "/merge"
+        merge_respose = sess_personal.put(merge_url)
+        
+        if merge_respose.status_code == 200:
+            print ('Merge post made succesfully.')
+        else:
+            print ('Merge put error')
+            sys.exit(1)
+        neutral_exit()
+        
+    else:
+        #it is not the one user who can commit to stable
         print("*** This PR was opened by somebody who isn't {github_pr_author} !")
         
-
         #add a review to the pull request saying it shouldnt exist
         review_url = event_data["pull_request"]["url"] + "/reviews"
         review_json = {"body": "Stable branches do not accept pull requests other then from jenkins.", "event": "COMMENT"}
@@ -107,12 +133,17 @@ if __name__ == '__main__':
         else:
             print ('Review post error')
             sys.exit(1)
+        
+        #close the pull request
+        pull_url = event_data["pull_request"]["url"]
+        
+        close_json = {"body": "Stable branches do not accept pull requests other then from jenkins.", "event": "COMMENT"}
+        close_response = sess.patch(pull_url,json=close_json);
 
+        if close_response.status_code == 200:
+            print ('Close post made succesfully.')
+        else:
+            print ('Review post error')
+            sys.exit(1)
+        
         neutral_exit()
-
-    #this needs to be done under the personal token not the repo one so it works
-    print("*** This PR is ready to be merged.")
-    merge_url = event_data["pull_request"]["url"] + "/merge"
-    sess_personal.put(merge_url)
-
-    neutral_exit()
